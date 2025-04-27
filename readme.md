@@ -56,3 +56,27 @@ A extension plugin for [Visual Studio Code](https://code.visualstudio.com/) to c
 ## Release Notes
 
 - See the [changelog](./changelog.md) for details.
+
+### Why Create It?
+
+- **Windows-Specific Git Behavior**:
+
+  - After `git init` or `git clone` on Windows, git automatically sets `core.ignorecase = true` in its configuration, making filenames case-insensitive.
+
+  - It will cause git to be unable to track changes in the case of file names (e.g. `File.txt` => `file.txt`), which may result in different file names between the remote and local repository.
+
+  - Note: **Global settings won’t override it.**
+    - Running `git config --global core.ignorecase false` has no effect.
+    - Need manually configure `git config core.ignorecase false` after each `git init` or `git clone` .
+
+- **Proactive Solution**:
+
+  - It might be a good idea to enforce lowercase names for files and folders to avoid this issue.
+
+  - It's also default behavior of `filename-lint` when enabled.
+
+    ```json
+    "filename-lint.enabled": true
+    ```
+
+- **Customization**: It can be customized by [Extension Settings](#extension-settings).
