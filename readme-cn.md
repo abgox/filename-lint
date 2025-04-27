@@ -31,28 +31,28 @@
 
 <img src="./icon.png" alt="logo" width="128px"/>
 
-A extension plugin for [Visual Studio Code](https://code.visualstudio.com/) to check whether the file or folder name meets the specified format specification.
+一个 [Visual Studio Code](https://code.visualstudio.com/) 扩展插件，用于检查文件或文件夹的名称是否符合指定的格式规范。
 
-## Getting Started
+## 开始使用
 
-1. [Install filename-lint](https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint).
+1. [安装 filename-lint](https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint)
 
-2. Add the following configuration to `settings.json` file.
+2. 添加以下配置到 `settings.json` 配置文件中
    ```json
    "filename-lint.enabled": true
    ```
 
-## Extension Commands
+## 扩展命令
 
 - `filename-lint.check-manually`
 
-## Extension Settings
+## 扩展设置
 
 - `"filename-lint.enabled"`
 - `"filename-lint.presetPattern"`
 - `"filename-lint.customRegex"`
 - `"filename-lint.ignorePatterns"`
 
-## Release Notes
+## 版本说明
 
-- See the [changelog](./changelog.md) for details.
+- 请查看 [changelog](./changelog.md)

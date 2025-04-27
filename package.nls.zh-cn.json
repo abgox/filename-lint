@@ -1,0 +1,11 @@
+{
+  "filename-lint.check-manually": "filename-lint: 手动检查文件名",
+  "filename-lint.check-completely": "filename-lint: 文件名检查完成!",
+  "filename-lint.enabled": "启用 filename-lint",
+  "filename-lint.extension-activated": "扩展 \"filename-lint\" 已激活",
+  "filename-lint.invalid-file-name": "文件名不符合指定格式: {0}",
+  "filename-lint.invalid-dir-name": "目录名不符合指定格式: {0}",
+  "filename-lint.presetPattern": "选择预设的命名格式规范\nlowercase: /^[^A-Z]+$/\nkebab-case: /^[a-z0-9]+(-[a-z0-9]+)*$/\nsnake_case: /^[a-z0-9]+(_[a-z0-9]+)*$/\ncamelCase: /^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$/\nPascalCase: /^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$/\ncustom: 通过 filename-lint.customRegex 自定义正则表达式",
+  "filename-lint.customRegex": "自定义正则表达式 (当 presetPatterns 为 custom 时生效)",
+  "filename-lint.ignorePatterns": "忽略文件列表 (glob 语法)\n默认值: [\"**/node_modules/**\",\"**/.git/**\",\"**/.idea/**\"]"
+}

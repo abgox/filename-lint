@@ -1,0 +1,119 @@
+{
+  "name": "filename-lint",
+  "displayName": "filename-lint",
+  "description": "A extension plugin to check whether the file or folder name meets the specified format specification.",
+  "author": "abgox",
+  "publisher": "abgox",
+  "version": "0.0.1",
+  "license": "MIT",
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "filename",
+    "lint",
+    "linter",
+    "validator",
+    "filename rules",
+    "filename checker",
+    "filename linter",
+    "filename validator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abgox/filename-lint"
+  },
+  "homepage": "https://github.com/abgox/filename-lint",
+  "icon": "icon.png",
+  "bugs": {
+    "url": "https://github.com/abgox/filename-lint/issues"
+  },
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "filename-lint.check-manually",
+        "title": "%filename-lint.check-manually%"
+      }
+    ],
+    "configuration": {
+      "title": "filename-lint",
+      "properties": {
+        "filename-lint.enabled": {
+          "title": "%filename-lint.enabled%",
+          "enum": [
+            true,
+            false
+          ],
+          "default": false
+        },
+        "filename-lint.presetPattern": {
+          "type": "string",
+          "title": "%filename-lint.presetPattern%",
+          "enum": [
+            "lowercase",
+            "kebab-case",
+            "snake_case",
+            "camelCase",
+            "PascalCase",
+            "custom"
+          ],
+          "default": "lowercase"
+        },
+        "filename-lint.customRegex": {
+          "type": "string",
+          "description": "%filename-lint.customRegex%",
+          "default": "^[^A-Z]+$",
+          "minLength": 1
+        },
+        "filename-lint.ignorePatterns": {
+          "type": "array",
+          "description": "%filename-lint.ignorePatterns%",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/.idea/**"
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.99.0",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.3.2",
+    "eslint": "^9.23.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "minimatch": "^10.0.1",
+    "vscode-nls-i18n": "^0.2.4"
+  }
+}
