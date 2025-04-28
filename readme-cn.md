@@ -22,7 +22,7 @@
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/created-at/abgox/filename-lint" alt="created" />
     </a>
-    <a href="https://github.com/abgox/filename-lint">
+    <a href="https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint">
         <img src="https://img.shields.io/visual-studio-marketplace/i/abgox.filename-lint" alt="install" />
     </a>
 </p>
