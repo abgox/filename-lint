@@ -7,5 +7,5 @@
   "filename-lint.invalid-dir-name": "Directory name does not match the format: {0}",
   "filename-lint.presetPattern": "Select a preset naming format specification.\nlowercase: /^[^A-Z]+$/\nkebab-case: /^[a-z0-9]+(-[a-z0-9]+)*$/\nsnake_case: /^[a-z0-9]+(_[a-z0-9]+)*$/\ncamelCase: /^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$/\nPascalCase: /^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$/\ncustom: custom regex expression by filename-lint.customRegex",
   "filename-lint.customRegex": "Custom regular expression. (effective when presetPatterns is custom)",
-  "filename-lint.ignorePatterns": "Ignore file patterns. (glob syntax)\n Default Value: [\"**/node_modules/**\",\"**/.git/**\",\"**/.idea/**\"]"
+  "filename-lint.ignorePatterns": "Ignore file patterns.\nglob syntax: https://code.visualstudio.com/docs/editor/glob-patterns\nDefault Value: [\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]"
 }

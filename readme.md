@@ -3,13 +3,6 @@
 </p>
 
 <p align="center">
-    <a href="readme.md">English</a> |
-    <a href="readme-cn.md">简体中文</a> |
-    <a href="https://github.com/abgox/filename-lint">Github</a> |
-    <a href="https://gitee.com/abgox/filename-lint">Gitee</a>
-</p>
-
-<p align="center">
     <a href="https://github.com/abgox/filename-lint/blob/main/license">
         <img src="https://img.shields.io/github/license/abgox/filename-lint" alt="license" />
     </a>
@@ -29,9 +22,11 @@
 
 ---
 
+[English](./readme.md) | [简体中文](./readme-cn.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
+
 <img src="./icon.png" alt="logo" width="128px"/>
 
-A extension plugin for [Visual Studio Code](https://code.visualstudio.com/) to check whether the file or folder name meets the specified format specification.
+An extension for [Visual Studio Code](https://code.visualstudio.com/) that enforces consistent naming conventions for your files and folders.
 
 ## Getting Started
 
@@ -78,5 +73,7 @@ A extension plugin for [Visual Studio Code](https://code.visualstudio.com/) to c
     ```json
     "filename-lint.enabled": true
     ```
+
+  - When enabled, a warning is given if a file or folder name appears in uppercase letters.
 
 - **Customization**: It can be customized by [Extension Settings](#extension-settings).

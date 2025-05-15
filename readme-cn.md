@@ -3,13 +3,6 @@
 </p>
 
 <p align="center">
-    <a href="readme.md">English</a> |
-    <a href="readme-cn.md">简体中文</a> |
-    <a href="https://github.com/abgox/filename-lint">Github</a> |
-    <a href="https://gitee.com/abgox/filename-lint">Gitee</a>
-</p>
-
-<p align="center">
     <a href="https://github.com/abgox/filename-lint/blob/main/license">
         <img src="https://img.shields.io/github/license/abgox/filename-lint" alt="license" />
     </a>
@@ -29,9 +22,11 @@
 
 ---
 
+[English](./readme.md) | [简体中文](./readme-cn.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
+
 <img src="./icon.png" alt="logo" width="128px"/>
 
-一个 [Visual Studio Code](https://code.visualstudio.com/) 扩展插件，用于检查文件或文件夹的名称是否符合指定的格式规范
+一个 [Visual Studio Code](https://code.visualstudio.com/) 扩展插件，用于统一文件及文件夹的命名规范
 
 ## 开始使用
 
@@ -76,7 +71,7 @@
     ```json
     "filename-lint.enabled": true
     ```
-  - 当启用后，如果文件或文件夹名称出现大写字母，就会给出警告
 
+  - 当启用后，如果文件或文件夹名称出现大写字母，就会给出警告
 
 - **自定义**: 可以通过 [扩展设置](#扩展设置) 去自定义

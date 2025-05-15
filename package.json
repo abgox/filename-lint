@@ -1,24 +1,27 @@
 {
   "name": "filename-lint",
-  "displayName": "filename-lint",
-  "description": "A extension plugin to check whether the file or folder name meets the specified format specification.",
+  "displayName": "File Name Lint",
+  "description": "A vscode extension that enforces consistent naming conventions for your files and folders.",
   "author": "abgox",
   "publisher": "abgox",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "categories": [
-    "Linters",
-    "Other"
+    "Linters"
   ],
   "keywords": [
-    "filename",
     "lint",
     "linter",
     "validator",
-    "filename rules",
-    "filename checker",
-    "filename linter",
-    "filename validator"
+    "rules",
+    "checker",
+    "validator",
+    "conventions",
+    "name",
+    "filename",
+    "file name",
+    "naming rules",
+    "naming conventions"
   ],
   "repository": {
     "type": "git",
@@ -47,7 +50,7 @@
       "title": "filename-lint",
       "properties": {
         "filename-lint.enabled": {
-          "title": "%filename-lint.enabled%",
+          "description": "%filename-lint.enabled%",
           "enum": [
             true,
             false
@@ -56,7 +59,7 @@
         },
         "filename-lint.presetPattern": {
           "type": "string",
-          "title": "%filename-lint.presetPattern%",
+          "description": "%filename-lint.presetPattern%",
           "enum": [
             "lowercase",
             "kebab-case",
@@ -81,9 +84,9 @@
             "minLength": 1
           },
           "default": [
-            "**/node_modules/**",
             "**/.git/**",
-            "**/.idea/**"
+            "**/.idea/**",
+            "**/node_modules/**"
           ]
         }
       }

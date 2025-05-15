@@ -71,8 +71,8 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   const validatePath = (filePath: string, namePattern: RegExp) => {
-    const basename = path.basename(filePath).replace(/\.[^/.]+$/, '');
-    if(basename.length){
+    const basename = path.basename(filePath).replace(/\.[^/.]+$/, "");
+    if (basename.length) {
       return namePattern.test(basename);
     }
     return true;
@@ -115,7 +115,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   function setupFileWatcher(config: configType) {
     const handler = async (uri: vscode.Uri) => {
-      const ignored = await isFileIgnored(uri.fsPath, config.ignorePatterns);
+      const relativePath = vscode.workspace.asRelativePath(uri.fsPath);
+      const ignored = await isFileIgnored(relativePath, config.ignorePatterns);
       ignored ? collection.delete(uri) : validateAndMark(uri, config);
     };
 
