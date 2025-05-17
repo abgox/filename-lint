@@ -1,11 +1,16 @@
 {
+  "filename-lint.enabled": "启用 filename-lint",
+  "filename-lint.namingPattern": "指定文件命名规范\n- 自定义正则表达式，如: `^[^A-Z]+$`\n- 或者使用预设值:\n  - **lowercase**: `^[^A-Z]+$`\n  - **kebab-case**: `^[a-z0-9]+(-[a-z0-9]+)*$`\n  - **snake_case**: `^[a-z0-9]+(_[a-z0-9]+)*$`\n  - **camelCase**: `^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$`\n  - **PascalCase**: `^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$`",
+  "filename-lint.excludePatterns": "指定需要排除的文件\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]`",
+  "filename-lint.includePatterns": "指定需要包含的文件\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/**\"]`",
+
   "filename-lint.check-manually": "filename-lint: 手动检查文件名",
   "filename-lint.check-completely": "filename-lint: 文件名检查完成!",
-  "filename-lint.enabled": "启用 filename-lint",
   "filename-lint.extension-activated": "扩展 \"filename-lint\" 已激活",
-  "filename-lint.invalid-file-name": "文件名不符合指定格式: {0}",
-  "filename-lint.invalid-dir-name": "目录名不符合指定格式: {0}",
-  "filename-lint.presetPattern": "选择预设的命名格式规范\nlowercase: /^[^A-Z]+$/\nkebab-case: /^[a-z0-9]+(-[a-z0-9]+)*$/\nsnake_case: /^[a-z0-9]+(_[a-z0-9]+)*$/\ncamelCase: /^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$/\nPascalCase: /^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$/\ncustom: 通过 filename-lint.customRegex 自定义正则表达式",
-  "filename-lint.customRegex": "自定义正则表达式 (当 presetPatterns 为 custom 时生效)",
-  "filename-lint.ignorePatterns": "指定需要忽略的文件列表\nglob 语法: https://code.visualstudio.com/docs/editor/glob-patterns\n默认值: [\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]"
+  "filename-lint.invalid-file-name": "文件名不符合指定命名规范: {0}",
+  "filename-lint.invalid-dir-name": "目录名不符合指定命名规范: {0}",
+
+  "filename-lint.deprecated.presetPattern": "此配置项已经更名为 filename-lint.namingPattern",
+  "filename-lint.deprecated.customRegex": "此配置项已经合并到 filename-lint.namingPattern",
+  "filename-lint.deprecated.ignorePatterns": "此配置项已经更名为 filename-lint.excludePatterns"
 }

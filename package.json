@@ -4,7 +4,7 @@
   "description": "A vscode extension that enforces consistent naming conventions for your files and folders.",
   "author": "abgox",
   "publisher": "abgox",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "license": "MIT",
   "categories": [
     "Linters"
@@ -55,30 +55,28 @@
             true,
             false
           ],
-          "default": false
+          "default": false,
+          "scope": "resource"
         },
-        "filename-lint.presetPattern": {
+        "filename-lint.namingPattern": {
           "type": "string",
-          "description": "%filename-lint.presetPattern%",
-          "enum": [
+          "markdownDescription": "%filename-lint.namingPattern%",
+          "description": "%filename-lint.namingPattern%",
+          "examples": [
             "lowercase",
             "kebab-case",
             "snake_case",
             "camelCase",
-            "PascalCase",
-            "custom"
+            "PascalCase"
           ],
-          "default": "lowercase"
+          "minLength": 1,
+          "default": "lowercase",
+          "scope": "resource"
         },
-        "filename-lint.customRegex": {
-          "type": "string",
-          "description": "%filename-lint.customRegex%",
-          "default": "^[^A-Z]+$",
-          "minLength": 1
-        },
-        "filename-lint.ignorePatterns": {
+        "filename-lint.excludePatterns": {
           "type": "array",
-          "description": "%filename-lint.ignorePatterns%",
+          "markdownDescription": "%filename-lint.excludePatterns%",
+          "description": "%filename-lint.excludePatterns%",
           "items": {
             "type": "string",
             "minLength": 1
@@ -87,7 +85,32 @@
             "**/.git/**",
             "**/.idea/**",
             "**/node_modules/**"
-          ]
+          ],
+          "minItems": 1,
+          "scope": "resource"
+        },
+        "filename-lint.includePatterns": {
+          "type": "array",
+          "markdownDescription": "%filename-lint.includePatterns%",
+          "description": "%filename-lint.includePatterns%",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": [
+            "**/**"
+          ],
+          "minItems": 1,
+          "scope": "resource"
+        },
+        "filename-lint.presetPattern": {
+          "deprecationMessage": "%filename-lint.deprecated.presetPattern%"
+        },
+        "filename-lint.customRegex": {
+          "deprecationMessage": "%filename-lint.deprecated.customRegex%"
+        },
+        "filename-lint.ignorePatterns": {
+          "deprecationMessage": "%filename-lint.deprecated.ignorePatterns%"
         }
       }
     }

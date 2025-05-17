@@ -44,9 +44,9 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
 ## Extension Settings
 
 - `"filename-lint.enabled"`
-- `"filename-lint.presetPattern"`
-- `"filename-lint.customRegex"`
-- `"filename-lint.ignorePatterns"`
+- `"filename-lint.namingPattern"`
+- `"filename-lint.excludePatterns"`
+- `"filename-lint.includePatterns"`
 
 ## Release Notes
 

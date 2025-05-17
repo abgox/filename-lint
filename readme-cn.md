@@ -44,13 +44,13 @@
 ## 扩展设置
 
 - `"filename-lint.enabled"`
-- `"filename-lint.presetPattern"`
-- `"filename-lint.customRegex"`
-- `"filename-lint.ignorePatterns"`
+- `"filename-lint.namingPattern"`
+- `"filename-lint.excludePatterns"`
+- `"filename-lint.includePatterns"`
 
 ## 版本说明
 
-- 请查看 [changelog](./changelog.md)
+- 请查看 [changelog](./changelog-cn.md)
 
 ## 为什么创建它
 
