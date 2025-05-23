@@ -16,7 +16,7 @@
         <img src="https://img.shields.io/github/created-at/abgox/filename-lint" alt="created" />
     </a>
     <a href="https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint">
-        <img src="https://img.shields.io/visual-studio-marketplace/i/abgox.filename-lint" alt="install" />
+        <img src="https://img.shields.io/visual-studio-marketplace/d/abgox.filename-lint" alt="download" />
     </a>
 </p>
 
@@ -37,16 +37,16 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
    "filename-lint.enabled": true
    ```
 
-## Extension Commands
-
-- `filename-lint.check-manually`
-
 ## Extension Settings
 
 - `"filename-lint.enabled"`
 - `"filename-lint.namingPattern"`
 - `"filename-lint.excludePatterns"`
 - `"filename-lint.includePatterns"`
+
+## Extension Commands
+
+- `filename-lint.check-manually`
 
 ## Release Notes
 
@@ -76,4 +76,4 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
 
   - When enabled, a warning is given if a file or folder name appears in uppercase letters.
 
-- **Customization**: It can be customized by [Extension Settings](#extension-settings).
+  - **Customization**: It can be customized by [Extension Settings](#extension-settings).

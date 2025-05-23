@@ -16,7 +16,7 @@
         <img src="https://img.shields.io/github/created-at/abgox/filename-lint" alt="created" />
     </a>
     <a href="https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint">
-        <img src="https://img.shields.io/visual-studio-marketplace/i/abgox.filename-lint" alt="install" />
+        <img src="https://img.shields.io/visual-studio-marketplace/d/abgox.filename-lint" alt="download" />
     </a>
 </p>
 
@@ -37,10 +37,6 @@
    "filename-lint.enabled": true
    ```
 
-## 扩展命令
-
-- `filename-lint.check-manually`
-
 ## 扩展设置
 
 - `"filename-lint.enabled"`
@@ -48,24 +44,28 @@
 - `"filename-lint.excludePatterns"`
 - `"filename-lint.includePatterns"`
 
+## 扩展命令
+
+- `filename-lint.check-manually`
+
 ## 版本说明
 
 - 请查看 [changelog](./changelog-cn.md)
 
 ## 为什么创建它
 
-- **Windows 特殊的 git 行为**:
+- **Windows 中特殊的 git 行为**:
 
   - 使用 `git init` 或 `git clone` 后，会自动生成 git 配置 `core.ignorecase = true`，使文件名大小写不敏感
-  - 这将导致 git 无法跟踪文件名大小写变化 (`File.txt` => `file.txt`)，这可能会导致远程仓库和本地仓库的文件名不同。
+  - 这将导致 git 无法跟踪文件名大小写变化 (`File.txt` => `file.txt`)，这可能会导致远程仓库和本地仓库的文件名不同
 
-  - 注意: **全局设置不会覆盖它**
-    - 运行 `git config --global core.ignorecase false` 无效
+  - 让人遗憾的是，**全局设置也不会覆盖它**
+    - 通过 `git config --global core.ignorecase false` 在全局添加是无效的
     - 每次 `git init` 或 `git clone` 后，需要手动配置 `git config core.ignorecase false`
 
 - **解决方案**:
 
-  - 在文件或文件夹名称中禁用大写字母，以避免此问题。
+  - 在文件或文件夹名称中禁用大写字母，以避免此问题
   - 这也是 `filename-lint` 启用后的默认效果 (`lowercase`)
 
     ```json
@@ -74,4 +74,4 @@
 
   - 当启用后，如果文件或文件夹名称出现大写字母，就会给出警告
 
-- **自定义**: 可以通过 [扩展设置](#扩展设置) 去自定义
+  - **自定义**: 可以通过 [扩展设置](#扩展设置) 去自定义
