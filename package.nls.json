@@ -1,8 +1,8 @@
 {
   "filename-lint.enabled": "Enable filename-lint",
   "filename-lint.namingPattern": "Specify file naming conventions.\n- Custom regex pattern. (Example: `^[^A-Z]+$`)\n- Or use preset patterns:\n  - **lowercase**: `^[^A-Z]+$`\n  - **kebab-case**: `^[a-z0-9]+(-[a-z0-9]+)*$`\n  - **snake_case**: `^[a-z0-9]+(_[a-z0-9]+)*$`\n  - **camelCase**: `^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$`\n  - **PascalCase**: `^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$`",
-  "filename-lint.excludePatterns": "Specify files to exclude.\n- It need to use [glob syntax](https://code.visualstudio.com/docs/editor/glob-patterns)\n- Default: `[\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]`",
-  "filename-lint.includePatterns": "Specify files to include.\n- It need to use [glob syntax](https://code.visualstudio.com/docs/editor/glob-patterns)\n- Default: `[\"**/**\"]`",
+  "filename-lint.excludePatterns": "Specify files or directories to exclude, within the scope defined by `filename-lint.includePatterns`.\n- It need to use [glob syntax](https://code.visualstudio.com/docs/editor/glob-patterns)\n- Default: `[\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]`",
+  "filename-lint.includePatterns": "Specify files or directories to include.\n- It need to use [glob syntax](https://code.visualstudio.com/docs/editor/glob-patterns)\n- Default: `[\"**/**\"]`",
 
   "filename-lint.check-manually": "filename-lint: Check file name manually",
   "filename-lint.check-completely": "filename-lint: Check file name completely!",

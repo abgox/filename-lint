@@ -1,8 +1,8 @@
 {
   "filename-lint.enabled": "启用 filename-lint",
   "filename-lint.namingPattern": "指定文件命名规范\n- 自定义正则表达式，如: `^[^A-Z]+$`\n- 或者使用预设值:\n  - **lowercase**: `^[^A-Z]+$`\n  - **kebab-case**: `^[a-z0-9]+(-[a-z0-9]+)*$`\n  - **snake_case**: `^[a-z0-9]+(_[a-z0-9]+)*$`\n  - **camelCase**: `^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$`\n  - **PascalCase**: `^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$`",
-  "filename-lint.excludePatterns": "指定需要排除的文件\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]`",
-  "filename-lint.includePatterns": "指定需要包含的文件\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/**\"]`",
+  "filename-lint.excludePatterns": "指定需要排除的文件或目录，基于 `filename-lint.includePatterns` 指定的范围\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/.git/**\", \"**/.idea/**\", \"**/node_modules/**\"]`",
+  "filename-lint.includePatterns": "指定需要包含的文件或目录\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/**\"]`",
 
   "filename-lint.check-manually": "filename-lint: 手动检查文件名",
   "filename-lint.check-completely": "filename-lint: 文件名检查完成!",
