@@ -74,6 +74,20 @@
           "default": "lowercase",
           "scope": "resource"
         },
+        "filename-lint.includePatterns": {
+          "type": "array",
+          "markdownDescription": "%filename-lint.includePatterns%",
+          "description": "%filename-lint.includePatterns%",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": [
+            "**/**"
+          ],
+          "minItems": 1,
+          "scope": "resource"
+        },
         "filename-lint.excludePatterns": {
           "type": "array",
           "markdownDescription": "%filename-lint.excludePatterns%",
@@ -86,20 +100,6 @@
             "**/.git/**",
             "**/.idea/**",
             "**/node_modules/**"
-          ],
-          "minItems": 1,
-          "scope": "resource"
-        },
-        "filename-lint.includePatterns": {
-          "type": "array",
-          "markdownDescription": "%filename-lint.includePatterns%",
-          "description": "%filename-lint.includePatterns%",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "default": [
-            "**/**"
           ],
           "minItems": 1,
           "scope": "resource"
