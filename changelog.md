@@ -2,6 +2,10 @@
 
 # Changelog
 
+## v0.1.2
+
+- Update config description.
+
 ## v0.1.1
 
 - Optimize the file watcher and performance.
