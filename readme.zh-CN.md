@@ -4,6 +4,9 @@
     <a href="https://github.com/abgox/filename-lint/blob/main/license">
         <img src="https://img.shields.io/github/license/abgox/filename-lint" alt="license" />
     </a>
+    <a href="https://github.com/abgox/filename-lint">
+        <img src="https://img.shields.io/github/v/release/abgox/filename-lint?label=version" alt="version" />
+    </a>
     <a href="https://img.shields.io/github/languages/code-size/abgox/filename-lint.svg">
         <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint.svg" alt="code size" />
     </a>
@@ -39,8 +42,8 @@
 
 - `"filename-lint.enabled"`
 - `"filename-lint.namingPattern"`
-- `"filename-lint.excludePatterns"`
 - `"filename-lint.includePatterns"`
+- `"filename-lint.excludePatterns"`
 
 ## 扩展命令
 
