@@ -1,11 +1,16 @@
 {
   "editor.formatOnSave": true,
   "filename-lint.enabled": true,
-  "filename-lint.excludePatterns": [
-    "**/.git/**",
-    "**/.idea/**",
-    "**/node_modules/**",
-    "**/.github/ISSUE_TEMPLATE/"
+  "filename-lint.includePatterns": [
+    "**/.vscode/**",
+    "**/.github/workflows/**",
+    "**/.github/ISSUE_TEMPLATE/**/*",
+    "src/**",
+    "*"
   ],
-  "typescript.tsc.autoDetect": "off"
+  "filename-lint.excludePatterns": [
+    "readme.*.md",
+    "changelog.*.md",
+    "package.nls.*.json"
+  ]
 }
