@@ -1,6 +1,4 @@
-<p align="center">
-    <h1 align="center">✨ filename-lint ✨</h1>
-</p>
+<h1 align="center">✨ filename-lint ✨</h1>
 
 <p align="center">
     <a href="https://github.com/abgox/filename-lint/blob/main/license">
@@ -22,7 +20,7 @@
 
 ---
 
-[English](./readme.md) | [简体中文](./readme-cn.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
+[English](./readme.md) | [简体中文](./readme.zh-CN.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
 
 <img src="./icon.png" alt="logo" width="128px"/>
 
@@ -32,7 +30,7 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
 
 1. [Install filename-lint](https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint).
 
-2. Add the following configuration to `settings.json` file.
+2. Add the following configuration to [settings.json](https://code.visualstudio.com/docs/configure/settings) file.
    ```json
    "filename-lint.enabled": true
    ```
