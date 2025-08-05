@@ -1,6 +1,11 @@
-[English](./changelog.md) | [简体中文](./changelog-cn.md)
+[English](./changelog.md) | [简体中文](./changelog.zh-CN.md)
 
 # Changelog
+
+## v0.1.1
+
+- Optimize the file watcher and performance.
+- Other fixes and optimizations.
 
 ## v0.1.0
 

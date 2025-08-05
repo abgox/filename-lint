@@ -48,7 +48,7 @@
 
 ## 版本说明
 
-- 请查看 [changelog](./changelog-cn.md)
+- 请查看 [changelog](./changelog.zh-CN.md)
 
 ## 为什么创建它
 
