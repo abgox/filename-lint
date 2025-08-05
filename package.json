@@ -2,6 +2,7 @@
   "name": "filename-lint",
   "displayName": "File Name Lint",
   "description": "A vscode extension that enforces consistent naming conventions for your files and folders.",
+  "type": "module",
   "author": "abgox",
   "publisher": "abgox",
   "version": "0.1.0",
@@ -140,6 +141,7 @@
   "dependencies": {
     "fast-glob": "^3.3.3",
     "minimatch": "^10.0.1",
+    "p-limit": "^6.2.0",
     "vscode-nls-i18n": "^0.2.4"
   }
 }

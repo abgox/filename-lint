@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { type configType } from "./types";
+import { type configType } from "./types.js";
 
 export function getConfig(uri: vscode.Uri): configType {
   // Config priority: xxx.code-workspace > folder > global > default

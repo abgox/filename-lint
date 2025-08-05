@@ -1,18 +1,22 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import * as fs from "fs";
+import os from "os";
 import fg from "fast-glob";
 import { minimatch } from "minimatch";
+import pLimit from "p-limit";
 import { init, localize } from "vscode-nls-i18n";
 
-import type { dataType, configType } from "./types";
-import { getConfig } from "./config";
+import type { dataType, configType } from "./types.js";
+import { getConfig } from "./config.js";
 
 export function activate(context: vscode.ExtensionContext) {
   init(context.extensionPath); // init i18n
 
   const workspaceFolders = vscode.workspace.workspaceFolders || [];
   const programData = new Map<string, dataType>();
+  const cpuCount = os.cpus().length;
+  const folderConcurrency = Math.min(5, cpuCount);
+  const fileConcurrency = Math.min(20, cpuCount * 2);
 
   scanWorkspace();
 
@@ -38,43 +42,31 @@ export function activate(context: vscode.ExtensionContext) {
 
   function setupFileWatcher() {
     function handler(uri: vscode.Uri) {
-      const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)!;
-      const { config, collection } = programData.get(
-        workspaceFolder.uri.toString()!
-      )!;
+      const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+      if (!workspaceFolder) {
+        return;
+      }
+      const data = programData.get(workspaceFolder.uri.toString());
+      if (!data) {
+        return;
+      }
 
-      createdFiles.clear();
-      createdFiles.set(uri, uri);
-
-      validateAndMark(uri, config, collection);
+      validateAndMark(uri, data.config, data.collection);
     }
-
-    const createdFiles = new Map();
 
     const watcher = vscode.workspace.createFileSystemWatcher("**/*");
     watcher.onDidCreate((uri) => handler(uri));
-    // Only the file in the .vscode directory will trigger change event, so we don't need to listen to it
-    // watcher.onDidChange((uri) => handler(uri, "change"));
     watcher.onDidDelete((uri) => {
-      const filePath = uri.fsPath;
-      fs.stat(filePath, (err) => {
-        const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri)!;
-        const { config, collection } = programData.get(
-          workspaceFolder.uri.toString()!
-        )!;
+      const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+      if (!workspaceFolder) {
+        return;
+      }
+      const data = programData.get(workspaceFolder.uri.toString());
+      if (!data) {
+        return;
+      }
 
-        collection.delete(uri);
-
-        if (err) {
-          // If file is not exist, it's delete operation
-          return;
-        }
-
-        // It's create and delete operation, so we need to validate and mark it again
-        createdFiles.forEach((uri) => {
-          validateAndMark(uri, config, collection);
-        });
-      });
+      data.collection.delete(uri);
     });
     return watcher;
   }
@@ -84,35 +76,48 @@ export function activate(context: vscode.ExtensionContext) {
       collection.dispose();
     });
     programData.clear();
-    workspaceFolders.forEach(async (folder) => {
-      const uri = folder.uri;
-      const config = getConfig(uri);
-      const collection = vscode.languages.createDiagnosticCollection(
-        `filename-lint-diagnostic-${uri.toString()}`
-      );
 
-      programData.set(uri.toString(), { config, collection });
+    const folderLimit = pLimit(folderConcurrency);
 
-      if (config.enabled) {
-        const files = await fg(config.includePatterns, {
-          cwd: uri.fsPath,
-          ignore: config.excludePatterns,
-          dot: true,
-          onlyFiles: false,
-          absolute: true,
-          suppressErrors: true,
-        });
-        for (const p of files) {
-          validateAndMark(vscode.Uri.file(p), config, collection);
-        }
-      }
-    });
+    await Promise.all(
+      workspaceFolders.map((folder) =>
+        folderLimit(async () => {
+          const uri = folder.uri;
+          const config = getConfig(uri);
+          const collection = vscode.languages.createDiagnosticCollection(
+            `filename-lint-diagnostic-${uri.toString()}`
+          );
+
+          programData.set(uri.toString(), { config, collection });
+
+          if (config.enabled) {
+            const files = await fg(config.includePatterns, {
+              cwd: uri.fsPath,
+              ignore: config.excludePatterns,
+              dot: true,
+              onlyFiles: false,
+              absolute: true,
+              suppressErrors: true,
+            });
+
+            const fileLimit = pLimit(fileConcurrency);
+            await Promise.all(
+              files.map((p) =>
+                fileLimit(() =>
+                  validateAndMark(vscode.Uri.file(p), config, collection)
+                )
+              )
+            );
+          }
+        })
+      )
+    );
   }
 
   function validateFileName(filePath: string, namePattern: RegExp) {
-    const basename = path.basename(filePath).replace(/\.[^/.]+$/, "");
-    if (basename.length) {
-      return namePattern.test(basename);
+    const { name } = path.parse(filePath);
+    if (name.length) {
+      return namePattern.test(name);
     }
     return true;
   }
@@ -123,6 +128,10 @@ export function activate(context: vscode.ExtensionContext) {
     config: configType,
     collection: vscode.DiagnosticCollection
   ) {
+    if (config.enabled === false) {
+      collection.delete(uri);
+      return;
+    }
     let relativePath = vscode.workspace.asRelativePath(uri.fsPath);
 
     if (workspaceFolders.length > 1) {
@@ -130,18 +139,25 @@ export function activate(context: vscode.ExtensionContext) {
       relativePath = relativePath.replace(/^[^/\\]+[/\\]/, "");
     }
 
-    const isFileExcluded = config.excludePatterns.some((pattern) =>
-      minimatch(relativePath, pattern, { dot: true })
-    );
     const isFileIncluded = config.includePatterns.some((pattern) =>
       minimatch(relativePath, pattern, { dot: true })
     );
 
-    if (
-      isFileExcluded ||
-      !isFileIncluded ||
-      validateFileName(uri.fsPath, config.currentPattern)
-    ) {
+    if (!isFileIncluded) {
+      collection.delete(uri);
+      return;
+    }
+
+    const isFileExcluded = config.excludePatterns.some((pattern) =>
+      minimatch(relativePath, pattern, { dot: true })
+    );
+
+    if (isFileExcluded) {
+      collection.delete(uri);
+      return;
+    }
+
+    if (validateFileName(uri.fsPath, config.currentPattern)) {
       collection.delete(uri);
       return;
     }
@@ -153,7 +169,7 @@ export function activate(context: vscode.ExtensionContext) {
     const message = localize(nlsKey, config.namingPattern);
 
     const diagnostic = new vscode.Diagnostic(
-      new vscode.Range(0, 0, 0, 10),
+      new vscode.Range(0, 0, 0, 0),
       message,
       vscode.DiagnosticSeverity.Warning
     );
