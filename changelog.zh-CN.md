@@ -2,6 +2,14 @@
 
 # 更新日志
 
+## v0.2.0
+
+- 修改了 `filename-lint.excludePatterns` 的默认值
+  - `["**/.git/**", "**/.idea/**", "**/node_modules/**"]` => `[]`
+  - 这几个目录会直接被排除，无需指定
+  - 如果你需要包含它们，可以在 `filename-lint.includePatterns` 中指定它们
+- 其他的修复和优化
+
 ## v0.1.2
 
 - 更新配置描述

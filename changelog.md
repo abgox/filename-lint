@@ -2,6 +2,14 @@
 
 # Changelog
 
+## v0.2.0
+
+- Modified the default value of `filename-lint.excludePatterns`.
+  - `["**/.git/**", "**/.idea/**", "**/node_modules/**"]` => `[]`
+  - These directories will be directly excluded without the need for additional specification.
+  - If you have to include them, you can specify them in `filename-lint.includePatterns`.
+- Other fixes and optimizations.
+
 ## v0.1.2
 
 - Update config description.
