@@ -51,6 +51,7 @@
       "title": "filename-lint",
       "properties": {
         "filename-lint.enabled": {
+          "markdownDescription": "%filename-lint.enabled%",
           "description": "%filename-lint.enabled%",
           "enum": [
             true,
@@ -96,11 +97,7 @@
             "type": "string",
             "minLength": 1
           },
-          "default": [
-            "**/.git/**",
-            "**/.idea/**",
-            "**/node_modules/**"
-          ],
+          "default": [],
           "minItems": 1,
           "scope": "resource"
         },
