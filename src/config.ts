@@ -4,11 +4,21 @@ import { type configType } from "./types.js";
 export function getConfig(uri: vscode.Uri): configType {
   // Config priority: xxx.code-workspace > folder > global > default
   const c = vscode.workspace.getConfiguration("filename-lint", uri);
+
+  const mandatoryExcludes = ["**/.git/**", "**/.idea/**", "**/node_modules/**"];
+
+  const userIncludes = c.get("includePatterns") as string[];
+  const userExcludes = c.get("excludePatterns") as string[];
+
+  const finalExcludes = mandatoryExcludes
+    .filter((path) => !userIncludes.includes(path))
+    .concat(userExcludes);
+
   const config: configType = {
     enabled: c.get("enabled") as boolean,
     namingPattern: c.get("namingPattern") as string,
-    excludePatterns: c.get("excludePatterns") as string[],
-    includePatterns: c.get("includePatterns") as string[],
+    excludePatterns: [...new Set(finalExcludes)],
+    includePatterns: userIncludes,
     currentPattern: /^[^A-Z]+$/, // default pattern is lowercase
   };
 
