@@ -1,4 +1,4 @@
-<h1 align="center">✨ filename-lint ✨</h1>
+<h1 align="center">✨ <a href="https://filename-lint.abgox.com">filename-lint</a> ✨</h1>
 
 <p align="center">
     <a href="https://github.com/abgox/filename-lint/blob/main/license">
@@ -22,6 +22,10 @@
 </p>
 
 ---
+
+<p align="center">
+  <strong>如果你喜欢这个项目，请给它一个 ⭐️ 或 <a href="https://abgox.com/donate">赞赏 💰</a></strong>
+</p>
 
 [English](./readme.md) | [简体中文](./readme.zh-CN.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
 
