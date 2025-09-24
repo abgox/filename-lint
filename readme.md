@@ -7,11 +7,11 @@
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/v/release/abgox/filename-lint?label=version" alt="version" />
     </a>
-    <a href="https://img.shields.io/github/languages/code-size/abgox/filename-lint.svg">
-        <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint.svg" alt="code size" />
+    <a href="https://img.shields.io/github/languages/code-size/abgox/filename-lint">
+        <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint" alt="code size" />
     </a>
-    <a href="https://img.shields.io/github/repo-size/abgox/filename-lint.svg">
-        <img src="https://img.shields.io/github/repo-size/abgox/filename-lint.svg" alt="code size" />
+    <a href="https://img.shields.io/github/repo-size/abgox/filename-lint">
+        <img src="https://img.shields.io/github/repo-size/abgox/filename-lint" alt="repo size" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/created-at/abgox/filename-lint" alt="created" />
