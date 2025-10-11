@@ -7,10 +7,10 @@
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/v/release/abgox/filename-lint?label=version" alt="version" />
     </a>
-    <a href="https://img.shields.io/github/languages/code-size/abgox/filename-lint">
+    <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint" alt="code size" />
     </a>
-    <a href="https://img.shields.io/github/repo-size/abgox/filename-lint">
+    <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/repo-size/abgox/filename-lint" alt="repo size" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
@@ -57,7 +57,7 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
 
 - See the [changelog](./changelog.md) for details.
 
-## Why Create It?
+## Why Create It
 
 - **Windows-Specific Git Behavior**:
 

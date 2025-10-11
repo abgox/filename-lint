@@ -7,10 +7,10 @@
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/v/release/abgox/filename-lint?label=version" alt="version" />
     </a>
-    <a href="https://img.shields.io/github/languages/code-size/abgox/filename-lint">
+    <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint" alt="code size" />
     </a>
-    <a href="https://img.shields.io/github/repo-size/abgox/filename-lint">
+    <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/repo-size/abgox/filename-lint" alt="repo size" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
@@ -24,7 +24,7 @@
 ---
 
 <p align="center">
-  <strong>喜欢这个项目？请给它一个 ⭐️ 或 <a href="https://abgox.com/donate">赞赏 💰</a></strong>
+  <strong>喜欢这个项目？请给它 Star ⭐️ 或 <a href="https://abgox.com/donate">赞赏 💰</a></strong>
 </p>
 
 [English](./readme.md) | [简体中文](./readme.zh-CN.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
