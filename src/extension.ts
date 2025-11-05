@@ -9,88 +9,114 @@ import { init, localize } from "vscode-nls-i18n";
 import type { dataType, configType } from "./types.js";
 import { getConfig } from "./config.js";
 
-export function activate(context: vscode.ExtensionContext) {
-  init(context.extensionPath); // init i18n
+const output = vscode.window.createOutputChannel("filename-lint", {
+  log: true,
+});
 
-  const workspaceFolders = vscode.workspace.workspaceFolders || [];
+let isChecking = false;
+let checkTimer: NodeJS.Timeout | undefined;
+
+export function activate(context: vscode.ExtensionContext) {
+  init(context.extensionPath);
+
+  output.info("[filename-lint] Extension activated");
+
   const programData = new Map<string, dataType>();
   const cpuCount = os.cpus().length;
   const folderConcurrency = Math.min(5, cpuCount);
   const fileConcurrency = Math.min(20, cpuCount * 2);
 
-  scanWorkspace();
-
-  context.subscriptions.push(
-    // Add event listener to rescan workspace when changed
-    vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration("filename-lint")) {
-        scanWorkspace();
-      }
-    }),
-    // Add command to manually check all workspace folders
-    vscode.commands.registerCommand(
-      "filename-lint.check-manually",
-      async () => {
-        await scanWorkspace();
-        vscode.window.showInformationMessage(
-          localize("filename-lint.check-completely")
-        );
-      }
-    ),
-    setupFileWatcher()
-  );
-
-  function setupFileWatcher() {
-    function handler(uri: vscode.Uri) {
-      const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-      if (!workspaceFolder) {
-        return;
-      }
-      const data = programData.get(workspaceFolder.uri.toString());
-      if (!data) {
-        return;
-      }
-
-      validateAndMark(uri, data.config, data.collection);
-    }
-
-    const watcher = vscode.workspace.createFileSystemWatcher("**/*");
-    watcher.onDidCreate((uri) => handler(uri));
-    watcher.onDidDelete((uri) => {
-      const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-      if (!workspaceFolder) {
-        return;
-      }
-      const data = programData.get(workspaceFolder.uri.toString());
-      if (!data) {
-        return;
-      }
-
-      data.collection.delete(uri);
-    });
-    return watcher;
+  function getCurrentWorkspaceFolders() {
+    return vscode.workspace.workspaceFolders || [];
   }
 
-  async function scanWorkspace() {
-    programData.forEach(({ collection }) => {
-      collection.dispose();
-    });
-    programData.clear();
+  const safeCheck = () => {
+    clearTimeout(checkTimer);
+    checkTimer = setTimeout(() => {
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: localize("filename-lint.check-workspace"),
+        },
+        async () => await checkWorkspace()
+      );
+    }, 400);
+  };
 
-    const folderLimit = pLimit(folderConcurrency);
+  // 初始化检查
+  safeCheck();
 
-    await Promise.all(
-      workspaceFolders.map((folder) =>
-        folderLimit(async () => {
-          const uri = folder.uri;
-          const config = getConfig(uri);
-          const collection = vscode.languages.createDiagnosticCollection(
-            `filename-lint-diagnostic-${uri.toString()}`
-          );
+  // 当配置变化时重新检查
+  const configWatcher = vscode.workspace.onDidChangeConfiguration((event) => {
+    if (event.affectsConfiguration("filename-lint")) {
+      output.info(
+        "[filename-lint] Configuration changed — rechecking workspace..."
+      );
+      safeCheck();
+    }
+  });
 
-          programData.set(uri.toString(), { config, collection });
+  // 注册手动检查命令
+  const manualCheck = vscode.commands.registerCommand(
+    "filename-lint.check-manually",
+    async () => {
+      output.info("[filename-lint] Manual check triggered");
+      await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: localize("filename-lint.check-workspace"),
+        },
+        async () => {
+          await checkWorkspace();
+        }
+      );
+      vscode.window.showInformationMessage(
+        localize("filename-lint.check-completely")
+      );
+    }
+  );
 
-          if (config.enabled) {
+  // 文件变动监听
+  const watcher = setupFileWatcher();
+
+  context.subscriptions.push(configWatcher, manualCheck, watcher);
+
+  async function checkWorkspace() {
+    if (isChecking) {
+      output.info(
+        "[filename-lint] Check already in progress, skipping duplicate call."
+      );
+      return;
+    }
+
+    isChecking = true;
+    output.info("[filename-lint] Checking workspace...");
+
+    try {
+      // 清理旧诊断
+      programData.forEach(({ collection }) => collection.dispose());
+      programData.clear();
+
+      const folderLimit = pLimit(folderConcurrency);
+
+      await Promise.all(
+        getCurrentWorkspaceFolders().map((folder) =>
+          folderLimit(async () => {
+            const uri = folder.uri;
+            const config = getConfig(uri);
+            const collection = vscode.languages.createDiagnosticCollection(
+              `filename-lint-diagnostic-${uri.toString()}`
+            );
+
+            programData.set(uri.toString(), { config, collection });
+
+            if (!config.enabled) {
+              output.warn(
+                `[filename-lint] Lint disabled for folder: ${uri.fsPath}`
+              );
+              return;
+            }
+
             const files = await fg(config.includePatterns, {
               cwd: uri.fsPath,
               ignore: config.excludePatterns,
@@ -100,6 +126,10 @@ export function activate(context: vscode.ExtensionContext) {
               suppressErrors: true,
             });
 
+            output.info(
+              `[filename-lint] Checking ${files.length} items in ${uri.fsPath}`
+            );
+
             const fileLimit = pLimit(fileConcurrency);
             await Promise.all(
               files.map((p) =>
@@ -108,51 +138,101 @@ export function activate(context: vscode.ExtensionContext) {
                 )
               )
             );
-          }
-        })
-      )
-    );
-  }
+          })
+        )
+      );
 
-  function validateFileName(filePath: string, namePattern: RegExp) {
-    const { name } = path.parse(filePath);
-    if (name.length) {
-      return namePattern.test(name);
+      output.info("[filename-lint] Workspace check completed ✅");
+    } catch (error) {
+      output.error(`[filename-lint] Check failed: ${String(error)}`);
+      vscode.window.showErrorMessage(
+        `[filename-lint] Workspace check failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    } finally {
+      isChecking = false;
     }
-    return true;
   }
 
-  // mark file or directory with diagnostic if it's invalid
+  function setupFileWatcher() {
+    const watcher = vscode.workspace.createFileSystemWatcher("**/*");
+
+    const uriTasks = new Map<string, Promise<void>>();
+    const typeLabels = {
+      create: "created",
+      change: "changed",
+      delete: "deleted",
+    } as const;
+
+    const handleEvent = async (
+      uri: vscode.Uri,
+      type: "create" | "change" | "delete"
+    ) => {
+      const key = uri.toString();
+
+      if (uriTasks.has(key)) {
+        await uriTasks.get(key);
+      }
+
+      const task = (async () => {
+        output.info(`[filename-lint] File ${typeLabels[type]}: ${uri.fsPath}`);
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+        if (!workspaceFolder) {
+          return;
+        }
+
+        const data = programData.get(workspaceFolder.uri.toString());
+        if (!data) {
+          return;
+        }
+
+        if (type === "delete") {
+          data.collection.delete(uri);
+          return;
+        }
+
+        await validateAndMark(uri, data.config, data.collection);
+      })();
+
+      uriTasks.set(key, task);
+      await task.finally(() => uriTasks.delete(key));
+    };
+
+    watcher.onDidCreate((uri) => handleEvent(uri, "create"));
+    watcher.onDidChange((uri) => handleEvent(uri, "change"));
+    watcher.onDidDelete((uri) => handleEvent(uri, "delete"));
+
+    return watcher;
+  }
+
   async function validateAndMark(
     uri: vscode.Uri,
     config: configType,
     collection: vscode.DiagnosticCollection
   ) {
-    if (config.enabled === false) {
+    if (!config.enabled) {
       collection.delete(uri);
       return;
     }
-    let relativePath = vscode.workspace.asRelativePath(uri.fsPath);
 
-    if (workspaceFolders.length > 1) {
-      // Remove workspace folder name from relative path
+    let relativePath = vscode.workspace.asRelativePath(uri.fsPath);
+    if (getCurrentWorkspaceFolders().length > 1) {
       relativePath = relativePath.replace(/^[^/\\]+[/\\]/, "");
     }
 
-    const isFileIncluded = config.includePatterns.some((pattern) =>
-      minimatch(relativePath, pattern, { dot: true })
+    const included = config.includePatterns.some((p) =>
+      minimatch(relativePath, p, { dot: true })
     );
-
-    if (!isFileIncluded) {
+    if (!included) {
       collection.delete(uri);
       return;
     }
 
-    const isFileExcluded = config.excludePatterns.some((pattern) =>
-      minimatch(relativePath, pattern, { dot: true })
+    const excluded = config.excludePatterns.some((p) =>
+      minimatch(relativePath, p, { dot: true })
     );
-
-    if (isFileExcluded) {
+    if (excluded) {
       collection.delete(uri);
       return;
     }
@@ -167,14 +247,20 @@ export function activate(context: vscode.ExtensionContext) {
       : "filename-lint.invalid-file-name";
 
     const message = localize(nlsKey, config.namingPattern);
-
     const diagnostic = new vscode.Diagnostic(
       new vscode.Range(0, 0, 0, 0),
       message,
       vscode.DiagnosticSeverity.Warning
     );
     diagnostic.source = "filename-lint";
+
     collection.set(uri, [diagnostic]);
+    output.warn(`[filename-lint] Invalid name detected: ${relativePath}`);
+  }
+
+  function validateFileName(filePath: string, namePattern: RegExp) {
+    const { name } = path.parse(filePath);
+    return name ? namePattern.test(name) : true;
   }
 
   async function isDirectory(uri: vscode.Uri) {
@@ -187,5 +273,6 @@ export function activate(context: vscode.ExtensionContext) {
   }
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  output.info("[filename-lint] Extension deactivated");
+}

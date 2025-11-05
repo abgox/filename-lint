@@ -1,11 +1,11 @@
 {
   "name": "filename-lint",
   "displayName": "File Name Lint",
-  "description": "A vscode extension that enforces consistent naming conventions for your files and folders.",
+  "description": "Enforces consistent naming conventions for your files and folders.",
   "type": "module",
   "author": "abgox",
   "publisher": "abgox",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "categories": [
     "Linters"
@@ -35,6 +35,9 @@
   },
   "engines": {
     "vscode": "^1.99.0"
+  },
+  "sponsor": {
+    "url": "https://abgox.com/donate"
   },
   "activationEvents": [
     "onStartupFinished"

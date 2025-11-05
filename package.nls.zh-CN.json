@@ -5,6 +5,7 @@
   "filename-lint.excludePatterns": "指定需要排除的文件或目录，基于 `filename-lint.includePatterns` 指定的范围\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[]`\n- 以下目录会被直接排除，无需额外指定\n  - `\"**/.git/**\"`\n  - `\"**/.idea/**\"`\n  - `\"**/.node_modules/**\"`",
 
   "filename-lint.check-manually": "filename-lint: 手动检查文件名",
+  "filename-lint.check-workspace": "filename-lint: 正在检查工作区...",
   "filename-lint.check-completely": "filename-lint: 文件名检查完成!",
   "filename-lint.extension-activated": "扩展 \"filename-lint\" 已激活",
   "filename-lint.invalid-file-name": "文件名不符合指定命名规范: {0}",

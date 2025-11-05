@@ -5,6 +5,7 @@
   "filename-lint.excludePatterns": "Specify files or directories to exclude, within the scope defined by `filename-lint.includePatterns`.\n- It need to use [glob syntax](https://code.visualstudio.com/docs/editor/glob-patterns)\n- Default: `[]`\n- The following directories will be directly excluded without the need for additional specification.\n  - `\"**/.git/**\"`\n  - `\"**/.idea/**\"`\n  - `\"**/.node_modules/**\"`",
 
   "filename-lint.check-manually": "filename-lint: Check file name manually",
+  "filename-lint.check-workspace": "filename-lint: Checking workspace...",
   "filename-lint.check-completely": "filename-lint: Check file name completely!",
   "filename-lint.extension-activated": "Extension \"filename-lint\" activated.",
   "filename-lint.invalid-file-name": "File name does not match the naming conventions: {0}",
