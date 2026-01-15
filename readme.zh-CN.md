@@ -5,7 +5,7 @@
         <img src="https://img.shields.io/github/license/abgox/filename-lint" alt="license" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
-        <img src="https://img.shields.io/github/v/release/abgox/filename-lint?label=version" alt="version" />
+        <img src="https://img.shields.io/visual-studio-marketplace/v/abgox.filename-lint" alt="version" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint" alt="code size" />
