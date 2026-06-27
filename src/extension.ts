@@ -1,30 +1,64 @@
 import * as vscode from "vscode";
-import * as path from "path";
-import os from "os";
-import fg from "fast-glob";
 import { minimatch } from "minimatch";
 import pLimit from "p-limit";
-import { init, localize } from "vscode-nls-i18n";
 
 import type { dataType, configType } from "./types.js";
 import { getConfig } from "./config.js";
+
+const MSG_CHECK_WORKSPACE = "filename-lint.check-workspace";
+const MSG_CHECK_COMPLETELY = "filename-lint.check-completely";
+const MSG_INVALID_FILE = "filename-lint.invalid-file-name";
+const MSG_INVALID_DIR = "filename-lint.invalid-dir-name";
 
 const output = vscode.window.createOutputChannel("filename-lint", {
   log: true,
 });
 
 let isChecking = false;
-let checkTimer: NodeJS.Timeout | undefined;
+let checkTimer: ReturnType<typeof setTimeout> | undefined;
+let translations: Record<string, string> = {};
+
+async function loadTranslations(extensionUri: vscode.Uri) {
+  try {
+    const bundlePath = vscode.Uri.joinPath(extensionUri, "package.nls.json");
+    const bundleContent = await vscode.workspace.fs.readFile(bundlePath);
+    const bundle = JSON.parse(new TextDecoder().decode(bundleContent));
+
+    let localeBundle: Record<string, string> = {};
+    const locale = vscode.env.language;
+    if (locale !== "en") {
+      for (const name of [locale, locale.split("-")[0]]) {
+        const localePath = vscode.Uri.joinPath(extensionUri, `package.nls.${name}.json`);
+        try {
+          const localeContent = await vscode.workspace.fs.readFile(localePath);
+          localeBundle = JSON.parse(new TextDecoder().decode(localeContent));
+          break;
+        } catch {
+          // try next candidate
+        }
+      }
+    }
+
+    translations = { ...bundle, ...localeBundle };
+  } catch (err) {
+    output.warn(`Failed to load translations: ${String(err)}`);
+  }
+}
+
+function t(key: string, ...args: Array<string | number>): string {
+  const msg = translations[key] ?? key;
+  return args.length > 0
+    ? msg.replace(/\{(\d+)\}/g, (_, i) => String(args[Number(i)]))
+    : msg;
+}
 
 export function activate(context: vscode.ExtensionContext) {
-  init(context.extensionPath);
-
-  output.info("[filename-lint] Extension activated");
+  loadTranslations(context.extensionUri);
+  output.info("Extension activated");
 
   const programData = new Map<string, dataType>();
-  const cpuCount = os.cpus().length;
-  const folderConcurrency = Math.min(5, cpuCount);
-  const fileConcurrency = Math.min(20, cpuCount * 2);
+  const folderConcurrency = 5;
+  const fileConcurrency = 20;
 
   function getCurrentWorkspaceFolders() {
     return vscode.workspace.workspaceFolders || [];
@@ -36,64 +70,53 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
-          title: localize("filename-lint.check-workspace"),
+          title: t(MSG_CHECK_WORKSPACE),
         },
-        async () => await checkWorkspace()
+        async () => await checkWorkspace(),
       );
     }, 400);
   };
 
-  // 初始化检查
   safeCheck();
 
-  // 当配置变化时重新检查
   const configWatcher = vscode.workspace.onDidChangeConfiguration((event) => {
     if (event.affectsConfiguration("filename-lint")) {
-      output.info(
-        "[filename-lint] Configuration changed — rechecking workspace..."
-      );
+      output.info("Configuration changed — rechecking workspace...");
       safeCheck();
     }
   });
 
-  // 注册手动检查命令
   const manualCheck = vscode.commands.registerCommand(
     "filename-lint.check-manually",
     async () => {
-      output.info("[filename-lint] Manual check triggered");
+      output.info("Manual check triggered");
       await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
-          title: localize("filename-lint.check-workspace"),
+          title: t(MSG_CHECK_WORKSPACE),
         },
         async () => {
           await checkWorkspace();
-        }
+        },
       );
-      vscode.window.showInformationMessage(
-        localize("filename-lint.check-completely")
-      );
-    }
+      vscode.window.showInformationMessage(t(MSG_CHECK_COMPLETELY));
+    },
   );
 
-  // 文件变动监听
   const watcher = setupFileWatcher();
 
   context.subscriptions.push(configWatcher, manualCheck, watcher);
 
   async function checkWorkspace() {
     if (isChecking) {
-      output.info(
-        "[filename-lint] Check already in progress, skipping duplicate call."
-      );
+      output.info("Check already in progress, skipping duplicate call.");
       return;
     }
 
     isChecking = true;
-    output.info("[filename-lint] Checking workspace...");
+    output.info("Checking workspace...");
 
     try {
-      // 清理旧诊断
       programData.forEach(({ collection }) => collection.dispose());
       programData.clear();
 
@@ -102,57 +125,157 @@ export function activate(context: vscode.ExtensionContext) {
       await Promise.all(
         getCurrentWorkspaceFolders().map((folder) =>
           folderLimit(async () => {
-            const uri = folder.uri;
-            const config = getConfig(uri);
+            const config = getConfig(folder.uri);
             const collection = vscode.languages.createDiagnosticCollection(
-              `filename-lint-diagnostic-${uri.toString()}`
+              `filename-lint-diagnostic-${folder.uri.toString()}`,
             );
 
-            programData.set(uri.toString(), { config, collection });
+            programData.set(folder.uri.toString(), { config, collection });
 
             if (!config.enabled) {
-              output.warn(
-                `[filename-lint] Lint disabled for folder: ${uri.fsPath}`
-              );
+              output.warn(`Lint disabled for folder: ${folder.name}`);
               return;
             }
 
-            const files = await fg(config.includePatterns, {
-              cwd: uri.fsPath,
-              ignore: config.excludePatterns,
-              dot: true,
-              onlyFiles: false,
-              absolute: true,
-              suppressErrors: true,
-            });
-
-            output.info(
-              `[filename-lint] Checking ${files.length} items in ${uri.fsPath}`
+            const files = await findWorkspaceFiles(
+              folder,
+              config.includePatterns,
+              config.excludePatterns,
             );
+
+            output.info(`Checking ${files.length} items in ${folder.name}`);
 
             const fileLimit = pLimit(fileConcurrency);
             await Promise.all(
-              files.map((p) =>
-                fileLimit(() =>
-                  validateAndMark(vscode.Uri.file(p), config, collection)
-                )
-              )
+              files.map((fileUri) =>
+                fileLimit(() => validateAndMark(fileUri, config, collection)),
+              ),
             );
-          })
-        )
+          }),
+        ),
       );
 
-      output.info("[filename-lint] Workspace check completed ✅");
+      output.info("Workspace check completed");
     } catch (error) {
-      output.error(`[filename-lint] Check failed: ${String(error)}`);
+      output.error(`Check failed: ${String(error)}`);
       vscode.window.showErrorMessage(
-        `[filename-lint] Workspace check failed: ${
+        `Workspace check failed: ${
           error instanceof Error ? error.message : String(error)
-        }`
+        }`,
       );
     } finally {
       isChecking = false;
     }
+  }
+
+  async function findWorkspaceFiles(
+    folder: vscode.WorkspaceFolder,
+    includePatterns: string[],
+    excludePatterns: string[],
+  ): Promise<vscode.Uri[]> {
+    const results: vscode.Uri[] = [];
+
+    async function walkDir(
+      dirUri: vscode.Uri,
+      relativeBase: string,
+      depth: number,
+    ) {
+      if (depth > 8) {
+        return;
+      }
+      let entries: [string, vscode.FileType][];
+      try {
+        entries = await vscode.workspace.fs.readDirectory(dirUri);
+      } catch {
+        return;
+      }
+
+      for (const [name, fileType] of entries) {
+        const relPath = relativeBase ? `${relativeBase}/${name}` : name;
+        const isDir = (fileType & vscode.FileType.Directory) !== 0;
+
+        if (isDir) {
+          const dirExcluded = excludePatterns.some((p) =>
+            minimatch(relPath, p, { dot: true }),
+          );
+          if (dirExcluded) {
+            continue;
+          }
+          await walkDir(vscode.Uri.joinPath(dirUri, name), relPath, depth + 1);
+        } else {
+          const included = includePatterns.some((p) =>
+            minimatch(relPath, p, { dot: true }),
+          );
+          if (!included) {
+            continue;
+          }
+          const fileExcluded = excludePatterns.some((p) =>
+            minimatch(relPath, p, { dot: true }),
+          );
+          if (fileExcluded) {
+            continue;
+          }
+          results.push(vscode.Uri.joinPath(dirUri, name));
+        }
+      }
+    }
+
+    const specificDirs = new Set<string>();
+    let needsFullScan = false;
+
+    for (const p of includePatterns) {
+      const starStarMatch = p.match(/^\*\*\/([^/*]+)\//);
+      if (starStarMatch) {
+        specificDirs.add(starStarMatch[1]);
+        continue;
+      }
+      if (p.startsWith("**")) {
+        needsFullScan = true;
+        continue;
+      }
+      const firstSegment = p.split("/")[0];
+      if (firstSegment && firstSegment !== "*" && !firstSegment.includes("*")) {
+        specificDirs.add(firstSegment);
+      }
+    }
+
+    if (needsFullScan || specificDirs.size === 0) {
+      await walkDir(folder.uri, "", 0);
+    } else {
+      let rootEntries: [string, vscode.FileType][];
+      try {
+        rootEntries = await vscode.workspace.fs.readDirectory(folder.uri);
+      } catch {
+        return results;
+      }
+
+      for (const [name, fileType] of rootEntries) {
+        const isDir = (fileType & vscode.FileType.Directory) !== 0;
+
+        if (isDir && specificDirs.has(name)) {
+          const dirExcluded = excludePatterns.some((p) =>
+            minimatch(name, p, { dot: true }),
+          );
+          if (!dirExcluded) {
+            await walkDir(vscode.Uri.joinPath(folder.uri, name), name, 1);
+          }
+        } else if (!isDir) {
+          const included = includePatterns.some((p) =>
+            minimatch(name, p, { dot: true }),
+          );
+          if (included) {
+            const fileExcluded = excludePatterns.some((p) =>
+              minimatch(name, p, { dot: true }),
+            );
+            if (!fileExcluded) {
+              results.push(vscode.Uri.joinPath(folder.uri, name));
+            }
+          }
+        }
+      }
+    }
+
+    return results;
   }
 
   function setupFileWatcher() {
@@ -167,7 +290,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const handleEvent = async (
       uri: vscode.Uri,
-      type: "create" | "change" | "delete"
+      type: "create" | "change" | "delete",
     ) => {
       const key = uri.toString();
 
@@ -176,7 +299,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const task = (async () => {
-        output.info(`[filename-lint] File ${typeLabels[type]}: ${uri.fsPath}`);
+        output.info(`File ${typeLabels[type]}: ${uri.path}`);
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
         if (!workspaceFolder) {
           return;
@@ -189,10 +312,27 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (type === "delete") {
           data.collection.delete(uri);
+          const parentUri = vscode.Uri.joinPath(uri, "..");
+          await validateAndMark(parentUri, data.config, data.collection);
           return;
         }
 
         await validateAndMark(uri, data.config, data.collection);
+
+        const isDir = await isDirectory(uri);
+        if (isDir) {
+          try {
+            const childEntries = await vscode.workspace.fs.readDirectory(uri);
+            for (const [childName, childType] of childEntries) {
+              const childUri = vscode.Uri.joinPath(uri, childName);
+              if ((childType & vscode.FileType.File) !== 0) {
+                await validateAndMark(childUri, data.config, data.collection);
+              }
+            }
+          } catch {
+            // ignore
+          }
+        }
       })();
 
       uriTasks.set(key, task);
@@ -209,20 +349,20 @@ export function activate(context: vscode.ExtensionContext) {
   async function validateAndMark(
     uri: vscode.Uri,
     config: configType,
-    collection: vscode.DiagnosticCollection
+    collection: vscode.DiagnosticCollection,
   ) {
     if (!config.enabled) {
       collection.delete(uri);
       return;
     }
 
-    let relativePath = vscode.workspace.asRelativePath(uri.fsPath);
+    let relativePath = vscode.workspace.asRelativePath(uri);
     if (getCurrentWorkspaceFolders().length > 1) {
       relativePath = relativePath.replace(/^[^/\\]+[/\\]/, "");
     }
 
     const included = config.includePatterns.some((p) =>
-      minimatch(relativePath, p, { dot: true })
+      minimatch(relativePath, p, { dot: true }),
     );
     if (!included) {
       collection.delete(uri);
@@ -230,37 +370,45 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const excluded = config.excludePatterns.some((p) =>
-      minimatch(relativePath, p, { dot: true })
+      minimatch(relativePath, p, { dot: true }),
     );
     if (excluded) {
       collection.delete(uri);
       return;
     }
 
-    if (validateFileName(uri.fsPath, config.currentPattern)) {
+    const fileName = getFileName(uri);
+    if (!fileName || config.currentPattern.test(fileName)) {
       collection.delete(uri);
       return;
     }
 
-    const nlsKey = (await isDirectory(uri))
-      ? "filename-lint.invalid-dir-name"
-      : "filename-lint.invalid-file-name";
+    const isDir = await isDirectory(uri);
+    const template = isDir ? MSG_INVALID_DIR : MSG_INVALID_FILE;
 
-    const message = localize(nlsKey, config.namingPattern);
+    const message = t(template, config.namingPattern);
     const diagnostic = new vscode.Diagnostic(
       new vscode.Range(0, 0, 0, 0),
       message,
-      vscode.DiagnosticSeverity.Warning
+      vscode.DiagnosticSeverity.Warning,
     );
     diagnostic.source = "filename-lint";
 
     collection.set(uri, [diagnostic]);
-    output.warn(`[filename-lint] Invalid name detected: ${relativePath}`);
+    output.warn(`Invalid name detected: ${relativePath}`);
   }
 
-  function validateFileName(filePath: string, namePattern: RegExp) {
-    const { name } = path.parse(filePath);
-    return name ? namePattern.test(name) : true;
+  function getFileName(uri: vscode.Uri): string | null {
+    const segments = uri.path.split("/");
+    const lastSegment = segments[segments.length - 1];
+    if (!lastSegment) {
+      return null;
+    }
+    const dotIndex = lastSegment.lastIndexOf(".");
+    if (dotIndex <= 0) {
+      return lastSegment;
+    }
+    return lastSegment.substring(0, dotIndex);
   }
 
   async function isDirectory(uri: vscode.Uri) {
@@ -274,5 +422,5 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  output.info("[filename-lint] Extension deactivated");
+  output.info("Extension deactivated");
 }

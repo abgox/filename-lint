@@ -1,16 +1,28 @@
 import * as vscode from "vscode";
 import { type configType } from "./types.js";
 
-export function getConfig(uri: vscode.Uri): configType {
-  // Config priority: xxx.code-workspace > folder > global > default
-  const c = vscode.workspace.getConfiguration("filename-lint", uri);
+export const MANDATORY_EXCLUDES = [
+  "**/.git/**",
+  "**/.jj/**",
+  "**/.svn/**",
+  "**/.hg/**",
+  "**/.idea/**",
+  "**/.vscode/**",
+  "**/node_modules/**",
+  "**/out/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/.nyc_output/**",
+  "**/coverage/**",
+];
 
-  const mandatoryExcludes = ["**/.git/**", "**/.idea/**", "**/node_modules/**"];
+export function getConfig(uri: vscode.Uri): configType {
+  const c = vscode.workspace.getConfiguration("filename-lint", uri);
 
   const userIncludes = c.get("includePatterns") as string[];
   const userExcludes = c.get("excludePatterns") as string[];
 
-  const finalExcludes = mandatoryExcludes
+  const finalExcludes = MANDATORY_EXCLUDES
     .filter((path) => !userIncludes.includes(path))
     .concat(userExcludes);
 

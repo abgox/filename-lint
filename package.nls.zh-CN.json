@@ -2,7 +2,7 @@
   "filename-lint.enabled": "启用 [filename-lint](https://marketplace.visualstudio.com/items?itemName=abgox.filename-lint)",
   "filename-lint.namingPattern": "指定文件命名规范，默认值: `lowercase`\n- 自定义正则表达式，如: `^[^A-Z]+$`\n- 或者使用预设值:\n  - **lowercase**: `^[^A-Z]+$`\n  - **kebab-case**: `^[a-z0-9]+(-[a-z0-9]+)*$`\n  - **snake_case**: `^[a-z0-9]+(_[a-z0-9]+)*$`\n  - **camelCase**: `^[a-z0-9]+[a-z0-9]*([A-Z][a-z0-9]*)*$`\n  - **PascalCase**: `^[A-Z]+[a-z0-9]*([A-Z0-9][a-z0-9]*)*$`",
   "filename-lint.includePatterns": "指定需要包含的文件或目录\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[\"**/**\"]`",
-  "filename-lint.excludePatterns": "指定需要排除的文件或目录，基于 `filename-lint.includePatterns` 指定的范围\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[]`\n- 以下目录会被直接排除，无需额外指定\n  - `\"**/.git/**\"`\n  - `\"**/.idea/**\"`\n  - `\"**/.node_modules/**\"`",
+  "filename-lint.excludePatterns": "指定需要排除的文件或目录，基于 `filename-lint.includePatterns` 指定的范围\n- 需要使用 [glob 语法](https://code.visualstudio.com/docs/editor/glob-patterns)\n- 默认值: `[]`\n- 以下目录会被直接排除，无需额外指定\n  - `\"**/.git/**\"`\n  - `\"**/.jj/**\"`\n  - `\"**/.svn/**\"`\n  - `\"**/.hg/**\"`\n  - `\"**/.idea/**\"`\n  - `\"**/.vscode/**\"`\n  - `\"**/node_modules/**\"`\n  - `\"**/out/**\"`\n  - `\"**/dist/**\"`\n  - `\"**/build/**\"`\n  - `\"**/.nyc_output/**\"`\n  - `\"**/coverage/**\"`\n- 可以通过将上述模式添加到 `filename-lint.includePatterns` 来覆盖此行为",
 
   "filename-lint.check-manually": "filename-lint: 手动检查文件名",
   "filename-lint.check-workspace": "filename-lint: 正在检查工作区...",

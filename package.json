@@ -2,10 +2,9 @@
   "name": "filename-lint",
   "displayName": "File Name Lint",
   "description": "Enforces consistent naming conventions for your files and folders.",
-  "type": "module",
   "author": "abgox",
   "publisher": "abgox",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "license": "MIT",
   "categories": [
     "Linters"
@@ -36,13 +35,18 @@
   "engines": {
     "vscode": "^1.99.0"
   },
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
   "sponsor": {
     "url": "https://abgox.com/donate"
   },
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/desktop/extension.js",
+  "browser": "./dist/web/extension.js",
   "contributes": {
     "commands": [
       {
@@ -117,13 +121,13 @@
     }
   },
   "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "build": "node esbuild.mjs --production",
+    "watch": "node esbuild.mjs --watch",
     "lint": "eslint src",
+    "pretest": "node esbuild.mjs && npm run lint",
     "test": "vscode-test",
     "package": "vsce package",
-    "publish": "npm run compile && vsce publish"
+    "publish": "npm run build && vsce publish"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -133,15 +137,15 @@
     "@typescript-eslint/parser": "^8.28.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
+    "@vscode/test-web": "^0.0.81",
     "@vscode/vsce": "^3.3.2",
+    "esbuild": "^0.28.1",
     "eslint": "^9.23.0",
     "ovsx": "^0.10.8",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "fast-glob": "^3.3.3",
     "minimatch": "^10.0.1",
-    "p-limit": "^6.2.0",
-    "vscode-nls-i18n": "^0.2.4"
+    "p-limit": "^6.2.0"
   }
 }
