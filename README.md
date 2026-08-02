@@ -1,17 +1,11 @@
 <h1 align="center">✨ <a href="https://filename-lint.abgox.com">filename-lint</a> ✨</h1>
 
 <p align="center">
-    <a href="https://github.com/abgox/filename-lint/blob/main/license">
+    <a href="https://github.com/abgox/filename-lint/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/abgox/filename-lint" alt="license" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/package-json/v/abgox/filename-lint" alt="version" />
-    </a>
-    <a href="https://github.com/abgox/filename-lint">
-        <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint" alt="code size" />
-    </a>
-    <a href="https://github.com/abgox/filename-lint">
-        <img src="https://img.shields.io/github/repo-size/abgox/filename-lint" alt="repo size" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/created-at/abgox/filename-lint" alt="created" />
@@ -21,10 +15,10 @@
 ---
 
 <p align="center">
-  <strong>Star ⭐️ or <a href="https://abgox.com/donate">Donate 💰</a> if you like it!</strong>
+  <strong>Star ⭐️ or <a href="https://me.abgox.com/donate">Donate 💰</a> if you like it!</strong>
 </p>
 
-[English](./readme.md) | [简体中文](./readme.zh-CN.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
+[简体中文](./README.zh-CN.md) | [GitHub](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
 
 <img src="./icon.png" alt="logo" width="128px"/>
 
@@ -63,11 +57,11 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
 
 ## Extension Commands
 
-- `filename-lint.check-manually`: Manually trigger a workspace check.
+`filename-lint.check-manually`: Manually trigger a workspace check.
 
-## Release Notes
+## What's New
 
-- See the [changelog](./changelog.md) for details.
+See the [changelog](./CHANGELOG.md) for details.
 
 ## Why Create It
 
@@ -83,3 +77,7 @@ An extension for [Visual Studio Code](https://code.visualstudio.com/) that enfor
   - It's also default behavior of `filename-lint` when enabled.
   - When enabled, a warning is given if a file or folder name appears in uppercase letters.
   - **Customization**: It can be customized by [Extension Settings](#extension-settings).
+
+## License
+
+[MIT](./LICENSE) © [abgox](https://me.abgox.com)

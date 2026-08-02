@@ -1,17 +1,11 @@
 <h1 align="center">✨ <a href="https://filename-lint.abgox.com">filename-lint</a> ✨</h1>
 
 <p align="center">
-    <a href="https://github.com/abgox/filename-lint/blob/main/license">
+    <a href="https://github.com/abgox/filename-lint/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/abgox/filename-lint" alt="license" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/package-json/v/abgox/filename-lint" alt="version" />
-    </a>
-    <a href="https://github.com/abgox/filename-lint">
-        <img src="https://img.shields.io/github/languages/code-size/abgox/filename-lint" alt="code size" />
-    </a>
-    <a href="https://github.com/abgox/filename-lint">
-        <img src="https://img.shields.io/github/repo-size/abgox/filename-lint" alt="repo size" />
     </a>
     <a href="https://github.com/abgox/filename-lint">
         <img src="https://img.shields.io/github/created-at/abgox/filename-lint" alt="created" />
@@ -21,10 +15,10 @@
 ---
 
 <p align="center">
-  <strong>喜欢这个项目？请给它 Star ⭐️ 或 <a href="https://abgox.com/donate">赞赏 💰</a></strong>
+  <strong>喜欢这个项目？请给它 Star ⭐️ 或 <a href="https://me.abgox.com/donate">赞赏 💰</a></strong>
 </p>
 
-[English](./readme.md) | [简体中文](./readme.zh-CN.md) | [Github](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
+[English](./README.md) | [GitHub](https://github.com/abgox/filename-lint) | [Gitee](https://gitee.com/abgox/filename-lint)
 
 <img src="./icon.png" alt="logo" width="128px"/>
 
@@ -63,11 +57,11 @@
 
 ## 扩展命令
 
-- `filename-lint.check-manually`: 手动触发工作区检查
+`filename-lint.check-manually`: 手动触发工作区检查
 
-## 版本说明
+## 新的变化
 
-- 请查看 [changelog](./changelog.zh-CN.md)
+请查看 [更新日志](./CHANGELOG.zh-CN.md)
 
 ## 为什么创建它
 
@@ -90,3 +84,7 @@
   - 当启用后，如果文件或文件夹名称出现大写字母，就会给出警告
 
   - **自定义**: 可以通过 [扩展设置](#扩展设置) 去自定义
+
+## License
+
+[MIT](./LICENSE) © [abgox](https://me.abgox.com)

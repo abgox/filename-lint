@@ -40,7 +40,7 @@
     "workspace"
   ],
   "sponsor": {
-    "url": "https://abgox.com/donate"
+    "url": "https://me.abgox.com/donate"
   },
   "activationEvents": [
     "onStartupFinished"

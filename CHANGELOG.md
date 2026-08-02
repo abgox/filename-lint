@@ -1,4 +1,4 @@
-[English](./changelog.md) | [简体中文](./changelog.zh-CN.md)
+[简体中文](./CHANGELOG.zh-CN.md)
 
 # Changelog
 
@@ -42,7 +42,6 @@
 - Support [workspace](https://code.visualstudio.com/docs/editing/workspaces/workspaces)
 - Add configuration: `filename-lint.includePatterns`
 - Configuration changes:
-
   - `filename-lint.presetPattern` => `filename-lint.namingPattern`
   - `filename-lint.customRegex` => `filename-lint.namingPattern`
   - `filename-lint.ignorePatterns` => `filename-lint.excludePatterns`
